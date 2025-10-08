@@ -6,3 +6,6 @@ prefix: [ AccessibleChat ]
 authors: [ PhileasFogg3 ]
 description: Makes some improvements to the Minecraft Chat
 website: https://github.com/PhileasFogg3
+commands:
+  improvedchat:
+    description: Main command
