@@ -1,0 +1,8 @@
+name: ImprovedChat
+version: '1.0-SNAPSHOT'
+main: org.phileasfogg3.improvedChat.ImprovedChat
+api-version: '1.21'
+prefix: [ AccessibleChat ]
+authors: [ PhileasFogg3 ]
+description: Makes some improvements to the Minecraft Chat
+website: https://github.com/PhileasFogg3
