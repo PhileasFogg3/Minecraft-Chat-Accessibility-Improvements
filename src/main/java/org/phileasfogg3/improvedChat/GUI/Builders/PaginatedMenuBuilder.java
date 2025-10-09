@@ -22,6 +22,8 @@ public class PaginatedMenuBuilder implements Listener {
     private final String title;
     private final int size;
 
+    private static final Set<String> registeredTitles = new HashSet<>();
+
     // List of items; each item can dynamically generate its name/lore for each player
     private final List<DynamicItemData> items = new ArrayList<>();
 
@@ -34,7 +36,11 @@ public class PaginatedMenuBuilder implements Listener {
         this.plugin = plugin;
         this.title = title;
         this.size = size;
-        Bukkit.getPluginManager().registerEvents(this, plugin);
+
+        if (!registeredTitles.contains(title)) {
+            Bukkit.getPluginManager().registerEvents(this, plugin);
+            registeredTitles.add(title);
+        }
     }
 
     /** Add a dynamic item */

@@ -22,6 +22,9 @@ public class MenuBuilder implements Listener {
     private final String title;
     private final int size;
 
+    private static final Set<String> registeredTitles = new HashSet<>();
+
+
     // Map slot -> ItemData (material, name, lore, action)
     private final Map<Integer, ItemData> items = new HashMap<>();
     private final Set<Player> viewers = new HashSet<>();
@@ -34,7 +37,11 @@ public class MenuBuilder implements Listener {
         this.title = title;
         this.size = size;
         this.inventory = Bukkit.createInventory(null, size, title);
-        Bukkit.getPluginManager().registerEvents(this, plugin);
+
+        if (!registeredTitles.contains(title)) {
+            Bukkit.getPluginManager().registerEvents(this, plugin);
+            registeredTitles.add(title);
+        }
     }
 
     /**
@@ -96,6 +103,10 @@ public class MenuBuilder implements Listener {
         if (event.getClickedInventory() == null) return;
 
         event.setCancelled(true); // Prevent taking items
+
+        int clickedSlot = event.getRawSlot();
+        if (clickedSlot >= inventory.getSize()) return;
+
         ItemData data = items.get(event.getSlot());
         if (data != null && data.action != null) {
             if (event.getWhoClicked() instanceof Player player) {

@@ -1,0 +1,73 @@
+NotificationSounds:
+  ENTITY_PLAYER_LEVELUP:
+    material: EXPERIENCE_BOTTLE
+    FriendlyName: "Level Up Chime"
+  ENTITY_EXPERIENCE_ORB_PICKUP:
+    material: EXPERIENCE_BOTTLE
+    FriendlyName: "XP Pickup"
+  BLOCK_NOTE_BLOCK_PLING:
+    material: NOTE_BLOCK
+    FriendlyName: "Note Pling"
+  BLOCK_AMETHYST_BLOCK_CHIME:
+    material: AMETHYST_SHARD
+    FriendlyName: "Amethyst Chime"
+  BLOCK_BELL_USE:
+    material: BELL
+    FriendlyName: "Bell Ring"
+  BLOCK_ENCHANTMENT_TABLE_USE:
+    material: ENCHANTING_TABLE
+    FriendlyName: "Enchantment Flourish"
+  ITEM_TRIDENT_RETURN:
+    material: TRIDENT
+    FriendlyName: "Trident Whoosh"
+  BLOCK_NOTE_BLOCK_HAT:
+    material: NOTE_BLOCK
+    FriendlyName: "Hat Hit"
+  BLOCK_NOTE_BLOCK_SNARE:
+    material: NOTE_BLOCK
+    FriendlyName: "Snare Hit"
+  ITEM_BOOK_PAGE_TURN:
+    material: BOOK
+    FriendlyName: "Page Turn"
+  UI_BUTTON_CLICK:
+    material: STONE_BUTTON
+    FriendlyName: "Button Click"
+  BLOCK_LANTERN_HIT:
+    material: LANTERN
+    FriendlyName: "Lantern Tap"
+  BLOCK_COPPER_PLACE:
+    material: COPPER_BLOCK
+    FriendlyName: "Copper Place"
+  BLOCK_ANVIL_LAND:
+    material: ANVIL
+    FriendlyName: "Anvil Drop"
+  ENTITY_VILLAGER_NO:
+    material: VILLAGER_SPAWN_EGG
+    FriendlyName: "Villager Disagree"
+  ENTITY_ELDER_GUARDIAN_CURSE:
+    material: GUARDIAN_SPAWN_EGG
+    FriendlyName: "Guardian Curse"
+  ENTITY_WARDEN_AGITATED:
+    material: WARDEN_SPAWN_EGG
+    FriendlyName: "Warden Warning"
+  ENTITY_ENDERMAN_SCREAM:
+    material: ENDERMAN_SPAWN_EGG
+    FriendlyName: "Enderman Scream"
+  ENTITY_ARROW_HIT_PLAYER:
+    material: ARROW
+    FriendlyName: "Arrow Hit"
+  UI_TOAST_CHALLENGE_COMPLETE:
+    material: DIAMOND
+    FriendlyName: "Challenge Complete"
+  UI_TOAST_IN:
+    material: LEVER
+    FriendlyName: "Toast In"
+  UI_TOAST_OUT:
+    material: PISTON
+    FriendlyName: "Toast Out"
+  BLOCK_NOTE_BLOCK_BIT:
+    material: NOTE_BLOCK
+    FriendlyName: "Bit Beep"
+  BLOCK_NOTE_BLOCK_CHIME:
+    material: NOTE_BLOCK
+    FriendlyName: "Note Chime"

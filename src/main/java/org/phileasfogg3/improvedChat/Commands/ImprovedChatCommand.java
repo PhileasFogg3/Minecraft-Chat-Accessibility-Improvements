@@ -1,6 +1,8 @@
 package org.phileasfogg3.improvedChat.Commands;
 
+import net.nexia.nexiaapi.Config;
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -15,6 +17,14 @@ import java.util.Collections;
 import java.util.List;
 
 public class ImprovedChatCommand implements CommandExecutor, TabCompleter {
+
+    private Config config;
+    private Config playerData;
+
+    public ImprovedChatCommand(Config config, Config playerData) {
+        this.config = config;
+        this.playerData = playerData;
+    }
 
     private static final List<String> SUBCOMMANDS = Arrays.asList("format", "ping", "help");
     private static final List<String> FORMAT_OPTIONS = Arrays.asList("basecolour", "bold", "underlined");
@@ -35,11 +45,13 @@ public class ImprovedChatCommand implements CommandExecutor, TabCompleter {
 
             switch (args[0].toLowerCase()) {
                 case "format":
+                    player.playSound(player.getLocation(), Sound.BLOCK_AMETHYST_BLOCK_CHIME, 1.0f, 1.0f);
                     break;
                 case "ping":
                     break;
                 case "help":
-                    MainMenu.openMainMenu(player);
+                    MainMenu MM = new MainMenu(config, playerData);
+                    MM.openMainMenu(player);
                     break;
                 default:
                     // sends help message

@@ -1,5 +1,7 @@
 package org.phileasfogg3.improvedChat.GUI;
 
+import net.nexia.nexiaapi.Config;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -10,7 +12,15 @@ import java.util.List;
 
 public class MainMenu {
 
-    public static void openMainMenu(Player player) {
+    private Config config;
+    private Config playerData;
+
+    public MainMenu(Config config, Config playerData) {
+        this.config = config;
+        this.playerData = playerData;
+    }
+
+    public void openMainMenu(Player player) {
         // Create the menu
         MenuBuilder menu = new MenuBuilder(ImprovedChat.Instance, ChatColor.DARK_PURPLE + "ImprovedChat Menu", 27);
 
@@ -18,7 +28,8 @@ public class MainMenu {
         menu.setItem(12, Material.NAME_TAG, ChatColor.YELLOW + "Chat Ping",
                 List.of("Click to edit ping notification settings"), (p, event) -> {
                     player.closeInventory();
-                    PingMenu.openPingMenu(player);
+                    PingMenu PM = new PingMenu(config, playerData);
+                    PM.openPingMenu(player);
                 });
 
         // Add an Apple item
@@ -30,6 +41,7 @@ public class MainMenu {
 
         // Open the menu for the player
         menu.open(player);
+
     }
 
 }
