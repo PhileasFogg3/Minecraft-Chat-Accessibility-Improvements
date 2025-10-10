@@ -24,10 +24,13 @@ public class MenuBuilder implements Listener {
 
     private static final Set<String> registeredTitles = new HashSet<>();
 
-
     // Map slot -> ItemData (material, name, lore, action)
     private final Map<Integer, ItemData> items = new HashMap<>();
     private final Set<Player> viewers = new HashSet<>();
+
+    // Back button fields
+    private Integer backButtonSlot = null;
+    private MenuBuilder backMenu = null;
 
     public MenuBuilder(JavaPlugin plugin, String title, int size) {
         if (size % 9 != 0 || size <= 0 || size > 54) {
@@ -51,6 +54,20 @@ public class MenuBuilder implements Listener {
         ItemData data = new ItemData(material, name, lore, action);
         items.put(slot, data);
         updateSlot(slot); // Initial update
+        return this;
+    }
+
+    /**
+     * Enable a back button that opens a specific menu
+     */
+    public MenuBuilder enableBackButton(Material material, String name, List<String> lore, MenuBuilder menuToGoBackTo) {
+        this.backMenu = menuToGoBackTo;
+        this.backButtonSlot = size - 1; // last slot in bottom row
+        setItem(backButtonSlot, material, name, lore, (player, event) -> {
+            if (backMenu != null) {
+                backMenu.open(player); // Open the specified menu
+            }
+        });
         return this;
     }
 

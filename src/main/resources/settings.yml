@@ -71,3 +71,6 @@ NotificationSounds:
   BLOCK_NOTE_BLOCK_CHIME:
     material: NOTE_BLOCK
     FriendlyName: "Note Chime"
+  ENTITY_EGG_THROW:
+    material: EGG
+    FriendlyName: "Egg Throw"

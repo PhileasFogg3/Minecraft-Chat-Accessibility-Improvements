@@ -2,6 +2,7 @@ package org.phileasfogg3.improvedChat.Listeners;
 
 import net.nexia.nexiaapi.Config;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -25,13 +26,36 @@ public class ChatListener implements Listener {
 
         for (Player player: Bukkit.getOnlinePlayers()) {
 
-            if (message.contains(player.getName()) & playerData.getData().getBoolean("players." + player.getUniqueId() + ".Notifications.Sound.Enabled")) {
+            String name = player.getName();
 
-                String soundName = playerData.getData().getString("players." + player.getUniqueId() + ".Notifications.Sound.Value");
+            String path = "players." + player.getUniqueId() + ".Notifications";
 
-                Sound sound = Sound.valueOf(soundName);
+            if (message.contains(player.getName())) {
 
-                player.playSound(player.getLocation(), sound, 1.0f, 1.0f);
+                if (playerData.getData().getBoolean(path + ".Sound.Enabled")) {
+
+                    String soundName = playerData.getData().getString(path + ".Sound.Value");
+
+                    Sound sound = Sound.valueOf(soundName);
+
+                    player.playSound(player.getLocation(), sound, 1.0f, 1.0f);
+
+                }
+
+                boolean bold = playerData.getData().getBoolean(path + ".Bold");
+                boolean underline = playerData.getData().getBoolean(path + ".Underlined");
+
+                StringBuilder format = new StringBuilder();
+
+                if (bold) format.append(ChatColor.BOLD);
+                if (underline) format.append(ChatColor.UNDERLINE);
+
+                if (format.length() > 0) {
+
+                    message = message.replace(name, format + name + ChatColor.RESET);
+                    event.setMessage(message);
+
+                }
 
             }
 

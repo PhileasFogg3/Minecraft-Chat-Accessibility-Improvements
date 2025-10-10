@@ -28,7 +28,6 @@ public class PlayerListener implements Listener {
 
             Map<String, Object> playerDataMap = new HashMap<String, Object>(){{
                put("UserName", player.getName());
-               put("Notifications.Enabled", false);
                put("Notifications.Bold", false);
                put("Notifications.Color", "");
                put("Notifications.Underlined", false);
