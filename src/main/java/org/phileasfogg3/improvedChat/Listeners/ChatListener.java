@@ -25,7 +25,7 @@ public class ChatListener implements Listener {
 
         for (Player player: Bukkit.getOnlinePlayers()) {
 
-            if (message.contains(player.getName())) {
+            if (message.contains(player.getName()) & playerData.getData().getBoolean("players." + player.getUniqueId() + ".Notifications.Sound.Enabled")) {
 
                 String soundName = playerData.getData().getString("players." + player.getUniqueId() + ".Notifications.Sound.Value");
 
