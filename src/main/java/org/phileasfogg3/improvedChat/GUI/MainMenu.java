@@ -26,7 +26,7 @@ public class MainMenu {
 
         // Add a Diamond item
         menu.setItem(12, Material.NAME_TAG, ChatColor.YELLOW + "Chat Ping",
-                List.of("Click to edit ping notification settings"), (p, event) -> {
+                List.of(ChatColor.WHITE + "Click to edit ping notification settings"), (p, event) -> {
                     player.closeInventory();
                     PingMenu PM = new PingMenu(config, playerData);
                     PM.openPingMenu(player);
@@ -34,7 +34,7 @@ public class MainMenu {
 
         // Add an Apple item
         menu.setItem(14, Material.OAK_SIGN, ChatColor.GREEN + "Chat Format",
-                List.of("Click to edit chat format"), (p, event) -> {
+                List.of(ChatColor.WHITE + "Click to edit chat format"), (p, event) -> {
                     p.getInventory().addItem(new org.bukkit.inventory.ItemStack(Material.APPLE));
                     p.sendMessage("You got a apple!");
                 });

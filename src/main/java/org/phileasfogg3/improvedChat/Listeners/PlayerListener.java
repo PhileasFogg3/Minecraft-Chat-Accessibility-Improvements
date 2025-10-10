@@ -29,12 +29,12 @@ public class PlayerListener implements Listener {
             Map<String, Object> playerDataMap = new HashMap<String, Object>(){{
                put("UserName", player.getName());
                put("Notifications.Enabled", false);
-               put("Notifications.Sound.Enabled", false);
-               put("Notifications.Sound.Value", "ENTITY_PLAYER_LEVELUP"); //Default value
                put("Notifications.Bold", false);
                put("Notifications.Color", "");
                put("Notifications.Underlined", false);
-               put("Aliases", "");
+               put("Notifications.Sound.Enabled", false);
+               put("Notifications.Sound.Value", "ENTITY_PLAYER_LEVELUP"); //Default value
+               put("Notifications.Aliases", "");
                //TODO Add more fields for general chat formatting.
             }};
 
