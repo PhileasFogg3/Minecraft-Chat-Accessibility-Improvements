@@ -60,14 +60,9 @@ public class MenuBuilder implements Listener {
     /**
      * Enable a back button that opens a specific menu
      */
-    public MenuBuilder enableBackButton(Material material, String name, List<String> lore, MenuBuilder menuToGoBackTo) {
-        this.backMenu = menuToGoBackTo;
+    public MenuBuilder enableBackButton(Material material, String name, List<String> lore, Runnable action) {
         this.backButtonSlot = size - 1; // last slot in bottom row
-        setItem(backButtonSlot, material, name, lore, (player, event) -> {
-            if (backMenu != null) {
-                backMenu.open(player); // Open the specified menu
-            }
-        });
+        setItem(backButtonSlot, material, name, lore, (player, event) -> action.run());
         return this;
     }
 
@@ -109,6 +104,10 @@ public class MenuBuilder implements Listener {
             item.setItemMeta(meta);
         }
         inventory.setItem(slot, item);
+    }
+
+    public String getTitle() {
+        return title;
     }
 
     /**

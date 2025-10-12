@@ -1,5 +1,6 @@
 package org.phileasfogg3.improvedChat.GUI;
 
+import com.sun.tools.javac.Main;
 import net.nexia.nexiaapi.Config;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -15,13 +16,11 @@ public class PingMenu {
 
     private final Config config;
     private final Config playerData;
-    private final MenuBuilder backMenu; // MainMenu
     private MenuBuilder pingMenuBuilder;
 
-    public PingMenu(Config config, Config playerData, MenuBuilder backMenu) {
+    public PingMenu(Config config, Config playerData) {
         this.config = config;
         this.playerData = playerData;
-        this.backMenu = backMenu;
     }
 
     public void openPingMenu(Player player) {
@@ -55,9 +54,24 @@ public class PingMenu {
         createToggleItem(pingMenuBuilder, player, path, 14, Material.OAK_SIGN,
                 "Underlined Text", "underlined mentions", ".Underlined");
 
+        ChatColor currentColour = ChatColor.valueOf(playerData.getData().getString("players." + player.getUniqueId() + ".Notifications.Color"));
+        ColoursMenu CM = new ColoursMenu(config, playerData, pingMenuBuilder);
+
+        pingMenuBuilder.setItem(16, Material.YELLOW_DYE, ChatColor.YELLOW + "Ping Colour",
+                List.of(
+                        ChatColor.WHITE + "Click me to set your ping colour",
+                        "",
+                        ChatColor.WHITE + "Your current colour is " + currentColour + CM.getColorData(currentColour).friendlyName()
+                ),
+                (p, e) -> {
+                    CM.openColoursMenu(p);
+                }
+        );
+
         // Back button
+        MainMenu MM = new MainMenu(config, playerData);
         pingMenuBuilder.enableBackButton(Material.ARROW, ChatColor.YELLOW + "Previous Menu",
-                List.of(ChatColor.WHITE + "Go back to the previous menu"), backMenu);
+                List.of(ChatColor.WHITE + "Go back to the previous menu"), () -> MM.openMainMenu(player));
 
         pingMenuBuilder.open(player);
     }
@@ -66,7 +80,7 @@ public class PingMenu {
         String path = "players." + player.getUniqueId() + ".Notifications.Sound.Enabled";
         switch (e.getClick()) {
             case LEFT -> {
-                SoundsMenu SM = new SoundsMenu(config, playerData, pingMenuBuilder);
+                SoundsMenu SM = new SoundsMenu(config, playerData);
                 SM.openSoundsMenu(player);
             }
             case RIGHT -> {
@@ -96,9 +110,13 @@ public class PingMenu {
                     boolean newState = !playerData.getData().getBoolean(path + key);
                     playerData.getData().set(path + key, newState);
                     playerData.save();
-                    openPingMenu(player); // update dynamically
+                    openPingMenu(p); // update dynamically
                 }
         );
+    }
+
+    public MenuBuilder getMenuBuilder() {
+        return pingMenuBuilder;
     }
 
 }

@@ -9,3 +9,4 @@ website: https://github.com/PhileasFogg3
 commands:
   improvedchat:
     description: Main command
+depend: [ProtocolLib]

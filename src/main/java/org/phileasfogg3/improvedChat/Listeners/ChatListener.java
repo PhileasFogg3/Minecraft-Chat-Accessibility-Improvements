@@ -11,8 +11,8 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 public class ChatListener implements Listener {
 
-    private Config config;
-    private Config playerData;
+    private final Config config;
+    private final Config playerData;
 
     public ChatListener(Config config, Config playerData) {
         this.config = config;
@@ -21,46 +21,64 @@ public class ChatListener implements Listener {
 
     @EventHandler
     public void onPlayerChat(AsyncPlayerChatEvent event) {
-
+        Player sender = event.getPlayer();
         String message = event.getMessage();
 
-        for (Player player: Bukkit.getOnlinePlayers()) {
+        event.setCancelled(true);
 
-            String name = player.getName();
+        String baseFormat = event.getFormat();
 
-            String path = "players." + player.getUniqueId() + ".Notifications";
+        for (Player viewer : Bukkit.getOnlinePlayers()) {
+            String viewerMessage = message;
 
-            if (message.contains(player.getName())) {
+            // Check if message mentions this player
+            if (message.contains(viewer.getName())) {
+                String path = "players." + viewer.getUniqueId() + ".Notifications";
 
+                // --- Play sound notification ---
                 if (playerData.getData().getBoolean(path + ".Sound.Enabled")) {
-
-                    String soundName = playerData.getData().getString(path + ".Sound.Value");
-
-                    Sound sound = Sound.valueOf(soundName);
-
-                    player.playSound(player.getLocation(), sound, 1.0f, 1.0f);
-
+                    try {
+                        String soundName = playerData.getData().getString(path + ".Sound.Value");
+                        Sound sound = Sound.valueOf(soundName);
+                        viewer.playSound(viewer.getLocation(), sound, 1.0f, 1.0f);
+                    } catch (IllegalArgumentException ignored) {
+                    }
                 }
 
+                // --- Build formatting string ---
                 boolean bold = playerData.getData().getBoolean(path + ".Bold");
                 boolean underline = playerData.getData().getBoolean(path + ".Underlined");
 
-                StringBuilder format = new StringBuilder();
+                // Color
+                String colorName = playerData.getData().getString(path + ".Color");
+                ChatColor color = ChatColor.RESET;
+                if (colorName != null) {
+                    try {
+                        color = ChatColor.valueOf(colorName.toUpperCase());
+                    } catch (IllegalArgumentException ignored) {
+                        // Invalid color name, default to RESET
+                    }
+                }
 
+                StringBuilder format = new StringBuilder();
+                format.append(color);
                 if (bold) format.append(ChatColor.BOLD);
                 if (underline) format.append(ChatColor.UNDERLINE);
 
+                // Replace mentions with formatted text
                 if (format.length() > 0) {
-
-                    message = message.replace(name, format + name + ChatColor.RESET);
-                    event.setMessage(message);
-
+                    viewerMessage = viewerMessage.replace(
+                            viewer.getName(),
+                            format + viewer.getName() + ChatColor.RESET
+                    );
                 }
-
             }
 
+            // Send message in vanilla-like format
+            viewer.sendMessage(String.format(baseFormat, sender.getDisplayName(), viewerMessage));
         }
 
+        // Log to console as vanilla
+        Bukkit.getConsoleSender().sendMessage("<" + sender.getName() + "> " + message);
     }
-
 }

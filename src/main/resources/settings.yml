@@ -74,3 +74,5 @@ NotificationSounds:
   ENTITY_EGG_THROW:
     material: EGG
     FriendlyName: "Egg Throw"
+ColourPicker:
+  GUI-Item: "wool" # Can be "wool", "concrete" or "terracotta"

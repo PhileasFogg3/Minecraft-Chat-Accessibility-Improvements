@@ -29,7 +29,7 @@ public class PlayerListener implements Listener {
             Map<String, Object> playerDataMap = new HashMap<String, Object>(){{
                put("UserName", player.getName());
                put("Notifications.Bold", false);
-               put("Notifications.Color", "");
+               put("Notifications.Color", "WHITE");
                put("Notifications.Underlined", false);
                put("Notifications.Sound.Enabled", false);
                put("Notifications.Sound.Value", "ENTITY_PLAYER_LEVELUP"); //Default value

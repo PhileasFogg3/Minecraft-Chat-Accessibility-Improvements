@@ -17,27 +17,26 @@ public class SoundsMenu {
 
     private final Config config;
     private final Config playerData;
-    private final MenuBuilder backMenu;
+    private MenuBuilder soundMenuBuilder;
 
     private static final int MENU_SIZE = 45;
 
-    public SoundsMenu(Config config, Config playerData, MenuBuilder backMenu) {
+    public SoundsMenu(Config config, Config playerData) {
         this.config = config;
         this.playerData = playerData;
-        this.backMenu = backMenu;
     }
 
     public void openSoundsMenu(Player player) {
-        List<String> keys = new ArrayList<>(config.getData()
-                .getConfigurationSection("NotificationSounds").getKeys(false));
+        List<String> keys = new ArrayList<>(config.getData().getConfigurationSection("NotificationSounds").getKeys(false));
 
         if (keys.isEmpty()) {
             Bukkit.getLogger().severe("No notification sounds found!");
             return;
         }
 
-        MenuBuilder menu = new MenuBuilder(ImprovedChat.Instance,
-                ChatColor.DARK_PURPLE + "Notification Sounds", MENU_SIZE);
+        if (soundMenuBuilder == null) {
+            soundMenuBuilder = new MenuBuilder(ImprovedChat.Instance,ChatColor.DARK_PURPLE + "Notification Sounds", MENU_SIZE);
+        }
 
         for (int slot = 0; slot < keys.size(); slot++) {
             String key = keys.get(slot);
@@ -63,15 +62,16 @@ public class SoundsMenu {
                             ChatColor.WHITE + "Left Click to set this sound"
                     );
 
-            menu.setItem(slot, material, color + friendlyName, lore,
-                    (p, e) -> handleClick(player, key, friendlyName, sound, e));
+            soundMenuBuilder.setItem(slot, material, color + friendlyName, lore,
+                    (p, e) -> handleClick(p, key, friendlyName, sound, e));
         }
 
         // Back button
-        menu.enableBackButton(Material.ARROW, ChatColor.YELLOW + "Previous Menu",
-                List.of(ChatColor.WHITE + "Go back to the previous menu"), backMenu);
+        PingMenu PM = new PingMenu(config, playerData);
+        soundMenuBuilder.enableBackButton(Material.ARROW, ChatColor.YELLOW + "Previous Menu",
+                List.of(ChatColor.WHITE + "Go back to the previous menu"), () -> PM.openPingMenu(player));
 
-        menu.open(player);
+        soundMenuBuilder.open(player);
     }
 
     private void handleClick(Player player, String soundName, String friendlyName, Sound sound, InventoryClickEvent e) {
@@ -85,4 +85,9 @@ public class SoundsMenu {
             case RIGHT -> player.playSound(player.getLocation(), sound, 1.0f, 1.0f);
         }
     }
+
+    public MenuBuilder getMenuBuilder() {
+        return soundMenuBuilder;
+    }
+
 }

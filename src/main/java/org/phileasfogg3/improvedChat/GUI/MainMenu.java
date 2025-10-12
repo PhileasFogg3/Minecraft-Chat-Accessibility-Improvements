@@ -31,9 +31,9 @@ public class MainMenu {
         // Add a Diamond item
         mainMenuBuilder.setItem(12, Material.NAME_TAG, ChatColor.YELLOW + "Chat Ping",
                 List.of(ChatColor.WHITE + "Click to edit ping notification settings"), (p, event) -> {
-                    player.closeInventory();
-                    PingMenu PM = new PingMenu(config, playerData, mainMenuBuilder);
-                    PM.openPingMenu(player);
+                    p.closeInventory();
+                    PingMenu PM = new PingMenu(config, playerData);
+                    PM.openPingMenu(p);
                 });
 
         // Add an Apple item
