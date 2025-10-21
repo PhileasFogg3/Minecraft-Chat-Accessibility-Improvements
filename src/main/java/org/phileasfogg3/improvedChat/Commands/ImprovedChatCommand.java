@@ -40,6 +40,7 @@ public class ImprovedChatCommand implements CommandExecutor, TabCompleter {
             if (args.length == 0) {
 
                 // Send a help message here
+                
 
             }
 
