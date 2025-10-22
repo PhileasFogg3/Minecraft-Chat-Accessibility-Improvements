@@ -30,83 +30,83 @@ public class ChatListener implements Listener {
 
         event.setCancelled(true);
 
-        String baseFormat = event.getFormat();
-
         for (Player viewer : Bukkit.getOnlinePlayers()) {
-            String viewerMessage = message;
 
-            List<String> aliases = playerData.getData().getStringList("players." + viewer.getUniqueId() + ".Notifications.Aliases");
-
-            // Check if message mentions this player
-            if (message.contains(viewer.getName()) || aliases.stream().anyMatch(message::contains)) {
-                String path = "players." + viewer.getUniqueId() + ".Notifications";
-
-                // --- Play sound notification ---
-                String[] words = message.split("\\s+"); // split by spaces
-
-                boolean matched = Arrays.stream(words)
-                        .anyMatch(word -> word.equalsIgnoreCase(viewer.getName()) ||
-                                aliases.stream().anyMatch(alias -> alias.equalsIgnoreCase(word)));
-
-                if (matched) {
-
-                    // --- Play sound notification ---
-                    if (playerData.getData().getBoolean(path + ".Sound.Enabled")) {
-                        try {
-                            String soundName = playerData.getData().getString(path + ".Sound.Value");
-                            Sound sound = Sound.valueOf(soundName);
-                            viewer.playSound(viewer.getLocation(), sound, 1.0f, 1.0f);
-                        } catch (IllegalArgumentException ignored) {}
-                    }
-                }
-
-
-                // --- Build formatting string ---
-                boolean bold = playerData.getData().getBoolean(path + ".Bold");
-                boolean underline = playerData.getData().getBoolean(path + ".Underlined");
-
-                // Color
-                String colorName = playerData.getData().getString(path + ".Color");
-                ChatColor color = ChatColor.RESET;
-                if (colorName != null) {
-                    try {
-                        color = ChatColor.valueOf(colorName.toUpperCase());
-                    } catch (IllegalArgumentException ignored) {
-                        // Invalid color name, default to RESET
-                    }
-                }
-
-                StringBuilder format = new StringBuilder();
-                format.append(color);
-                if (bold) format.append(ChatColor.BOLD);
-                if (underline) format.append(ChatColor.UNDERLINE);
-
-                // Replace mentions with formatted text
-
-                if (format.length() > 0) {
-                    // Replace full player name (whole word only)
-                    viewerMessage = viewerMessage.replaceAll(
-                            "(?i)\\b" + Pattern.quote(viewer.getName()) + "\\b",
-                            format + viewer.getName() + ChatColor.RESET
-                    );
-
-                    // Replace aliases (whole words only)
-                    for (String alias : aliases) {
-                        viewerMessage = viewerMessage.replaceAll(
-                                "(?i)\\b" + Pattern.quote(alias) + "\\b",
-                                format + alias + ChatColor.RESET
-                        );
-                    }
-                }
-
-
+            // Get viewer's preferred chat color
+            String chatColorName = playerData.getData()
+                    .getString("players." + viewer.getUniqueId() + ".Chat.Color");
+            ChatColor baseChatColor = ChatColor.RESET;
+            if (chatColorName != null) {
+                try {
+                    baseChatColor = ChatColor.valueOf(chatColorName.toUpperCase());
+                } catch (IllegalArgumentException ignored) {}
             }
 
-            // Send message in vanilla-like format
-            viewer.sendMessage(String.format(baseFormat, sender.getDisplayName(), viewerMessage));
+            List<String> aliases = playerData.getData()
+                    .getStringList("players." + viewer.getUniqueId() + ".Notifications.Aliases");
+
+            // Prepare notification formatting
+            String path = "players." + viewer.getUniqueId() + ".Notifications";
+            ChatColor mentionColor = ChatColor.RESET;
+            boolean bold = false;
+            boolean underline = false;
+            boolean soundEnabled = false;
+            Sound sound = null;
+
+            if (!aliases.isEmpty() || viewer.getName() != null) {
+                // Get formatting from config
+                String colorName = playerData.getData().getString(path + ".Color");
+                if (colorName != null) {
+                    try {
+                        mentionColor = ChatColor.valueOf(colorName.toUpperCase());
+                    } catch (IllegalArgumentException ignored) {}
+                }
+                bold = playerData.getData().getBoolean(path + ".Bold");
+                underline = playerData.getData().getBoolean(path + ".Underlined");
+                soundEnabled = playerData.getData().getBoolean(path + ".Sound.Enabled");
+                if (soundEnabled) {
+                    try {
+                        String soundName = playerData.getData().getString(path + ".Sound.Value");
+                        sound = Sound.valueOf(soundName);
+                    } catch (IllegalArgumentException ignored) {}
+                }
+            }
+
+            // Build message word by word
+            StringBuilder formattedMessage = new StringBuilder();
+            formattedMessage.append("<").append(sender.getDisplayName()).append("> ");
+
+            String[] words = message.split(" ");
+            for (int i = 0; i < words.length; i++) {
+                String word = words[i];
+
+                boolean isMention = word.equalsIgnoreCase(viewer.getName()) ||
+                        aliases.stream().anyMatch(alias -> alias.equalsIgnoreCase(word));
+
+                if (isMention) {
+                    // Apply mention formatting
+                    StringBuilder format = new StringBuilder();
+                    format.append(mentionColor);
+                    if (bold) format.append(ChatColor.BOLD);
+                    if (underline) format.append(ChatColor.UNDERLINE);
+
+                    formattedMessage.append(format).append(word).append(baseChatColor);
+
+                    // Play sound once
+                    if (soundEnabled && sound != null) {
+                        viewer.playSound(viewer.getLocation(), sound, 1.0f, 1.0f);
+                    }
+                } else {
+                    // Regular word: base chat color
+                    formattedMessage.append(baseChatColor).append(word);
+                }
+
+                if (i < words.length - 1) formattedMessage.append(" ");
+            }
+
+            viewer.sendMessage(formattedMessage.toString());
         }
 
-        // Log to console as vanilla
         Bukkit.getConsoleSender().sendMessage("<" + sender.getName() + "> " + message);
     }
 }

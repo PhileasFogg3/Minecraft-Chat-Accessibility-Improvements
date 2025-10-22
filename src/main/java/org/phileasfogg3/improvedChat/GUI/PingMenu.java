@@ -30,10 +30,8 @@ public class PingMenu {
     }
 
     public void openPingMenu(Player player) {
-        if (pingMenuBuilder == null) {
-            pingMenuBuilder = new MenuBuilder(ImprovedChat.Instance,
-                    ChatColor.DARK_PURPLE + "Ping Notification Settings", 27);
-        }
+
+        pingMenuBuilder = new MenuBuilder(ImprovedChat.Instance, ChatColor.DARK_PURPLE + "Ping Notification Settings", 27);
 
         String path = "players." + player.getUniqueId() + ".Notifications";
 
@@ -61,7 +59,7 @@ public class PingMenu {
                 "Underlined Text", "underlined mentions", ".Underlined");
 
         ChatColor currentColour = ChatColor.valueOf(playerData.getData().getString("players." + player.getUniqueId() + ".Notifications.Color"));
-        ColoursMenu CM = new ColoursMenu(config, playerData, pingMenuBuilder);
+        ColoursMenu CM = new ColoursMenu(config, playerData);
 
         pingMenuBuilder.setItem(16, Material.YELLOW_DYE, ChatColor.YELLOW + "Ping Colour",
                 List.of(
@@ -70,7 +68,7 @@ public class PingMenu {
                         ChatColor.WHITE + "Your current colour is " + currentColour + CM.getColorData(currentColour).friendlyName()
                 ),
                 (p, e) -> {
-                    CM.openColoursMenu(p);
+                    CM.openColoursMenu(p, "§5Ping Notification Settings");
                 }
         );
 

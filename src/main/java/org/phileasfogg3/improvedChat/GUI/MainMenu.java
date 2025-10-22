@@ -24,11 +24,8 @@ public class MainMenu {
 
     public void openMainMenu(Player player) {
         // Create the menu
-        if (mainMenuBuilder == null) {
-            mainMenuBuilder = new MenuBuilder(ImprovedChat.Instance, ChatColor.DARK_PURPLE + "ImprovedChat Menu", 27);
-        }
+        mainMenuBuilder = new MenuBuilder(ImprovedChat.Instance, ChatColor.DARK_PURPLE + "ImprovedChat Menu", 27);
 
-        // Add a Diamond item
         mainMenuBuilder.setItem(12, Material.NAME_TAG, ChatColor.YELLOW + "Chat Ping",
                 List.of(ChatColor.WHITE + "Click to edit ping notification settings"), (p, event) -> {
                     p.closeInventory();
@@ -36,12 +33,16 @@ public class MainMenu {
                     PM.openPingMenu(p);
                 });
 
-        // Add an Apple item
-        mainMenuBuilder.setItem(14, Material.OAK_SIGN, ChatColor.GREEN + "Chat Format",
-                List.of(ChatColor.WHITE + "Click to edit chat format"), (p, event) -> {
-                    p.getInventory().addItem(new org.bukkit.inventory.ItemStack(Material.APPLE));
-                    p.sendMessage("You got a apple!");
-                });
+        ChatColor currentColour = ChatColor.valueOf(playerData.getData().getString("players." + player.getUniqueId() + ".Chat.Color"));
+        ColoursMenu CM = new ColoursMenu(config, playerData);
+
+        mainMenuBuilder.setItem(14, Material.OAK_SIGN, ChatColor.GREEN + "Chat Colour",
+                List.of(
+                        ChatColor.WHITE + "Click to edit chat colours",
+                        "",
+                        ChatColor.WHITE + "The current chat colour is " + currentColour + CM.getColorData(currentColour).friendlyName()
+                ),
+                (p, event) -> CM.openColoursMenu(p, "§5ImprovedChat Menu"));
 
         // Open the menu for the player
         mainMenuBuilder.open(player);

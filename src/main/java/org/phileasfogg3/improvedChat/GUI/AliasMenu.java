@@ -29,7 +29,6 @@ public class AliasMenu {
 
         aliasMenuBuilder = new MenuBuilder(ImprovedChat.Instance, ChatColor.DARK_PURPLE + "Alias Menu", 27);
 
-
         String path = "players." + player.getUniqueId() + ".Notifications.Aliases";
         aliases = playerData.getData().getStringList(path);
 

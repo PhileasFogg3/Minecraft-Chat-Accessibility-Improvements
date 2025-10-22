@@ -34,9 +34,7 @@ public class SoundsMenu {
             return;
         }
 
-        if (soundMenuBuilder == null) {
-            soundMenuBuilder = new MenuBuilder(ImprovedChat.Instance,ChatColor.DARK_PURPLE + "Notification Sounds", MENU_SIZE);
-        }
+        soundMenuBuilder = new MenuBuilder(ImprovedChat.Instance,ChatColor.DARK_PURPLE + "Notification Sounds", MENU_SIZE);
 
         for (int slot = 0; slot < keys.size(); slot++) {
             String key = keys.get(slot);

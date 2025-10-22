@@ -34,6 +34,7 @@ public class PlayerListener implements Listener {
                put("Notifications.Sound.Enabled", false);
                put("Notifications.Sound.Value", "ENTITY_PLAYER_LEVELUP"); //Default value
                put("Notifications.Aliases", "");
+               put("Chat.Color", "WHITE");
                //TODO Add more fields for general chat formatting.
             }};
 

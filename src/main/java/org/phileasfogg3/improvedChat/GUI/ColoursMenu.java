@@ -16,19 +16,28 @@ public class ColoursMenu {
     private Config playerData;
 
     private MenuBuilder colourMenuBuilder;
-    private MenuBuilder backMenu;
 
-    public ColoursMenu(Config config, Config playerData, MenuBuilder backMenu) {
+    public ColoursMenu(Config config, Config playerData) {
         this.config = config;
         this.playerData = playerData;
-        this.backMenu = backMenu;
     }
 
-    public void openColoursMenu(Player player) {
+    public void openColoursMenu(Player player, String previousMenuTitle) {
 
-        if (colourMenuBuilder == null) {
-            colourMenuBuilder = new MenuBuilder(ImprovedChat.Instance, ChatColor.DARK_PURPLE + "Ping Colour Picker", 27);
+        String title = "";
+
+        switch (previousMenuTitle) {
+            case "§5Ping Notification Settings":
+                title = "Colour Picker (Notifications)";
+                break;
+            case "§5ImprovedChat Menu":
+                title = "Colour Picker (Chat)";
+                break;
+            default:
+                Bukkit.getLogger().severe("Something has gone very wrong.");
         }
+
+        colourMenuBuilder = new MenuBuilder(ImprovedChat.Instance, ChatColor.DARK_PURPLE + title, 27);
 
         String path = "players." + player.getUniqueId() + ".Notifications.Color";
 
@@ -36,30 +45,54 @@ public class ColoursMenu {
         for (ChatColor color : ChatColor.values()) {
             if (!color.isColor()) continue;
 
-            boolean isCurrent = color.name().equalsIgnoreCase(playerData.getData().getString(path));
+            boolean isCurrent;
+
+            String type= "";
+
+            switch (previousMenuTitle) {
+                case "§5Ping Notification Settings":
+                    type = "notification";
+                    isCurrent = color.name().equalsIgnoreCase(playerData.getData().getString(path));
+                    break;
+                case "§5ImprovedChat Menu":
+                    type = "chat";
+                    isCurrent = color.name().equalsIgnoreCase(playerData.getData().getString("players." + player.getUniqueId() + ".Chat.Color"));
+                    break;
+                default:
+                    Bukkit.getLogger().severe("Something has gone very wrong.");
+                    isCurrent = false;
+            }
 
             ChatColor itemColor = isCurrent ? ChatColor.GREEN : ChatColor.RED;
             List<String> lore = isCurrent ?
                     List.of(
-                            ChatColor.WHITE + "Click to make this your notification colour!",
+                            ChatColor.WHITE + "Click to make this your " + type + " colour!",
                             "",
-                            ChatColor.GREEN + "This is your current notification colour"
+                            ChatColor.GREEN + "This is your current " + type + " colour"
                     ) :
                     List.of(
-                            ChatColor.WHITE + "Click to make this your notification colour!"
+                            ChatColor.WHITE + "Click to make this your " + type +  " colour!"
                     );
 
             colourMenuBuilder.setItem(slot, getColouredMaterial(color), itemColor + getColorData(color).friendlyName, lore,
-                    (p, e) -> handleClick(p, path, color));
+                    (p, e) -> handleClick(p, path, color, previousMenuTitle));
 
             slot++;
         }
 
-        if (backMenu.getTitle().equals("§5Ping Notification Settings")) {
-            PingMenu PM = new PingMenu(config, playerData);
-            colourMenuBuilder.enableBackButton(Material.ARROW, ChatColor.YELLOW + "Previous Menu",
-                    List.of(ChatColor.WHITE + "Go back to the previous menu"), () -> PM.openPingMenu(player));
-
+        switch (previousMenuTitle) {
+            case "§5Ping Notification Settings":
+                PingMenu PM = new PingMenu(config, playerData);
+                colourMenuBuilder.enableBackButton(Material.ARROW, ChatColor.YELLOW + "Previous Menu",
+                        List.of(ChatColor.WHITE + "Go back to the previous menu"), () -> PM.openPingMenu(player));
+                break;
+            case "§5ImprovedChat Menu":
+                MainMenu MM = new MainMenu(config, playerData);
+                colourMenuBuilder.enableBackButton(Material.ARROW, ChatColor.YELLOW + "Previous Menu",
+                        List.of(ChatColor.WHITE + "Go back to the previous menu"), () -> MM.openMainMenu(player));
+                break;
+            default:
+                Bukkit.getLogger().severe("Something has gone very wrong.");
         }
 
         colourMenuBuilder.open(player);
@@ -124,12 +157,24 @@ public class ColoursMenu {
         }
     }
 
-    private void handleClick(Player player, String path, ChatColor color) {
+    private void handleClick(Player player, String path, ChatColor color, String previousMenuTitle) {
 
-        playerData.getData().set(path, color.name());
-        playerData.save();
-        player.sendMessage("You have set your notification colour to: " + getColorData(color).friendlyName);
-        openColoursMenu(player);
+        switch (previousMenuTitle) {
+            case "§5Ping Notification Settings":
+                playerData.getData().set(path, color.name());
+                playerData.save();
+                player.sendMessage("You have set your notification colour to: " + getColorData(color).friendlyName);
+                openColoursMenu(player, "§5Ping Notification Settings");
+                break;
+            case "§5ImprovedChat Menu":
+                String chatPath = "players." + player.getUniqueId() + ".Chat.Color";
+                playerData.getData().set(chatPath, color.name());
+                playerData.save();
+                player.sendMessage("You have set your chat colour to: " + getColorData(color).friendlyName);
+                openColoursMenu(player, "§5ImprovedChat Menu");
+                break;
+            default:
+        }
 
     }
 
